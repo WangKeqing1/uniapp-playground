@@ -4,5 +4,11 @@ import electron from 'vite-plugin-electron/simple'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [uni(), electron({ main: { entry: 'electron/main.ts' } })],
+  plugins: [
+    uni(),
+    electron({
+      main: { entry: 'electron/main.ts' },
+      preload: { entry: 'electron/preload.ts' },
+    }),
+  ],
 })

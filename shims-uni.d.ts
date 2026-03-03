@@ -2,9 +2,7 @@
 import 'vue'
 
 declare module '@vue/runtime-core' {
-  type Hooks = App.AppInstance & Page.PageInstance;
-
-  interface ComponentCustomOptions extends Hooks {
-
-  }
+  type Hooks = App.AppInstance & Page.PageInstance
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface ComponentCustomOptions extends Hooks {}
 }

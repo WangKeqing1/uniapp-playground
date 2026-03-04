@@ -14,6 +14,12 @@
       }
     },
     {
+      "path": "pages/camera/camera",
+      "style": {
+        "navigationBarTitleText": "相机测试"
+      }
+    },
+    {
       "path": "pages/test/test",
       "style": {
         "navigationBarTitleText": "功能测试页"

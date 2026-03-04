@@ -7,6 +7,7 @@
     <view class="nav-area">
       <button class="nav-btn" @click="goTo('/pages/about/about')">前往 About 测试页</button>
       <button class="nav-btn" @click="goTo('/pages/test/test')">前往 Test 测试页</button>
+      <button class="nav-btn" @click="goTo('/pages/camera/camera')">前往 Camera 相机测试</button>
       <button class="nav-btn" @click="goTo('/pages/stability/stability')">
         前往 稳定性 测试页
       </button>

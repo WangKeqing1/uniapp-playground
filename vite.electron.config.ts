@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import electron from 'vite-plugin-electron/simple'
 import baseConfig from './vite.base.config'
+import tailwindcssPostcss from '@tailwindcss/postcss'
 
 export default defineConfig({
   ...baseConfig,
@@ -17,4 +18,9 @@ export default defineConfig({
       },
     }),
   ],
+  css: {
+    postcss: {
+      plugins: [tailwindcssPostcss],
+    },
+  },
 })

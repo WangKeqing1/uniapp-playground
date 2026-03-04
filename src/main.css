@@ -1,0 +1,66 @@
+/* H5 端：使用官方标准引入（含 preflight 全局重置样式） */
+/* #ifdef H5 */
+@import 'tailwindcss';
+/* #endif */
+
+/* 非 H5 端（小程序）：weapp-tailwindcss 会自动将此处改写为小程序适配版本
+   - 去除 preflight（小程序不需要 web 全局重置）
+   - 降级 @layer 为普通 CSS（小程序不支持 @layer）
+*/
+/* #ifndef H5 */
+@import 'tailwindcss';
+/* #endif */
+
+/* 排除构建产物目录，避免 TailwindCSS 扫描 */
+@source not "dist";
+@source not "dist-electron";
+@source not "dist-publish";
+
+/* ============================================================
+   主题配置 (TailwindCSS v4 CSS-first 方式)
+   使用 @theme 覆盖或扩展默认设计令牌
+   文档: https://tailwindcss.com/docs/theme
+   ============================================================ */
+@theme {
+  /* ------ 统一品牌色板 (标准工程版) ------ */
+  --color-primary: oklch(55% 0.2 250); /* 品牌主色 (蓝色) */
+  --color-secondary: oklch(70% 0.15 250); /* 辅助色 */
+  --color-danger: oklch(55% 0.22 27); /* 危险色 */
+  --color-success: oklch(60% 0.2 150); /* 成功色 */
+
+  /* ------ 字体族 ------ */
+  --font-family-sans: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ------ 跨端间距基准适配 (核心逻辑) ------ */
+  /* #ifndef MP */
+  /* H5 或 Electron 端：使用标准 Web 缩放 (1单位 = 0.25rem = 4px) */
+  --spacing: 0.25rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  /* #endif */
+
+  /* #ifdef MP */
+  /* 小程序端：使用 rpx 响应式缩放 (1单位 = 2rpx) 
+     这样 p-4 在移动端就是 8rpx，在桌面端就是 16px，保持比例一致 */
+  --spacing: 2rpx;
+  --radius-sm: 8rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --radius-xl: 32rpx;
+  --text-xs: 20rpx;
+  --text-sm: 24rpx;
+  --text-base: 28rpx;
+  --text-lg: 32rpx;
+  --text-xl: 36rpx;
+  /* #endif */
+
+  --radius-full: 9999px;
+}

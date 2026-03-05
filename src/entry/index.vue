@@ -29,17 +29,13 @@
     </view>
 
     <view class="nav-area">
-      <button class="nav-btn" @click="goTo('/pages/about/about')">前往 About 测试页</button>
-      <button class="nav-btn" @click="goTo('/pages/test/test')">前往 Test 测试页</button>
-      <button class="nav-btn" @click="goTo('/pages/camera/camera')">前往 Camera 相机测试</button>
-      <button class="nav-btn" @click="goTo('/pages/stability/stability')">
+      <button class="nav-btn" @click="goTo('/views/about/about')">前往 About 测试页</button>
+      <button class="nav-btn" @click="goTo('/views/test/test')">前往 Test 测试页</button>
+      <button class="nav-btn" @click="goTo('/views/camera/camera')">前往 Camera 相机测试</button>
+      <button class="nav-btn" @click="goTo('/views/stability/stability')">
         前往 稳定性 测试页
       </button>
-      <button
-        class="nav-btn"
-        style="background-color: #4cd964"
-        @click="goTo('/subpages/test-sub/test-sub')"
-      >
+      <button class="nav-btn" style="background-color: #4cd964" @click="goTo('/views/test/test')">
         前往 分包 测试页
       </button>
     </view>

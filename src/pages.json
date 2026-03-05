@@ -8,44 +8,53 @@
   "$schema": "https://cdn.jsdelivr.net/gh/uni-helper/uni-app-schemas-vscode/schemas/pages.json",
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "entry/index",
       "style": {
         "navigationBarTitleText": "uni-app"
-      }
-    },
-    {
-      "path": "pages/about/about",
-      "style": {
-        "navigationBarTitleText": "关于我们测试页"
-      }
-    },
-    {
-      "path": "pages/camera/camera",
-      "style": {
-        "navigationBarTitleText": "相机测试"
-      }
-    },
-    {
-      "path": "pages/test/test",
-      "style": {
-        "navigationBarTitleText": "功能测试页"
-      }
-    },
-    {
-      "path": "pages/stability/stability",
-      "style": {
-        "navigationBarTitleText": "安全性与稳定性测试"
       }
     }
   ],
   "subPackages": [
     {
-      "root": "subpages",
+      "root": "views/test",
       "pages": [
         {
-          "path": "test-sub/test-sub",
+          "path": "test",
           "style": {
             "navigationBarTitleText": "分包测试页"
+          }
+        }
+      ]
+    },
+    {
+      "root": "views/about",
+      "pages": [
+        {
+          "path": "about",
+          "style": {
+            "navigationBarTitleText": "关于我们测试页"
+          }
+        }
+      ]
+    },
+    {
+      "root": "views/camera",
+      "pages": [
+        {
+          "path": "camera",
+          "style": {
+            "navigationBarTitleText": "相机测试"
+          }
+        }
+      ]
+    },
+    {
+      "root": "views/stability",
+      "pages": [
+        {
+          "path": "stability",
+          "style": {
+            "navigationBarTitleText": "安全性与稳定性测试"
           }
         }
       ]

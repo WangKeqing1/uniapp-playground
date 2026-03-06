@@ -29,6 +29,12 @@
     </view>
 
     <view class="nav-area">
+      <button
+        class="nav-btn bg-linear-to-r from-primary to-secondary"
+        @click="goTo('/views/login/login')"
+      >
+        前往 登录 测试页 (新实现)
+      </button>
       <button class="nav-btn" @click="goTo('/views/about/about')">前往 About 测试页</button>
       <button class="nav-btn" @click="goTo('/views/test/test')">前往 Test 测试页</button>
       <button class="nav-btn" @click="goTo('/views/camera/camera')">前往 Camera 相机测试</button>

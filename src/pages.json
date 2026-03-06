@@ -58,6 +58,30 @@
           }
         }
       ]
+    },
+    {
+      "root": "views/profile",
+      "pages": [
+        {
+          "path": "profile",
+          "style": {
+            "navigationBarTitleText": "个人信息",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "views/login",
+      "pages": [
+        {
+          "path": "login",
+          "style": {
+            "navigationBarTitleText": "登录",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {

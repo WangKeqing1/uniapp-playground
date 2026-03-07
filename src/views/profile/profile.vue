@@ -146,6 +146,34 @@ const handleSave = async () => {
   }
 }
 
+/**
+ * 跨平台读取本地文件为 ArrayBuffer 的工具函数
+ * 兼容 H5、小程序、App 端的限制
+ */
+const getFileBuffer = (filePath: string): Promise<ArrayBuffer> => {
+  return new Promise((resolve, reject) => {
+    // #ifdef H5
+    fetch(filePath)
+      .then((res) => res.arrayBuffer())
+      .then(resolve)
+      .catch(reject)
+    // #endif
+
+    // #ifndef H5
+    const fileSystemManager = uni.getFileSystemManager ? uni.getFileSystemManager() : null
+    if (fileSystemManager) {
+      fileSystemManager.readFile({
+        filePath: filePath,
+        success: (res) => resolve(res.data as ArrayBuffer),
+        fail: reject,
+      })
+    } else {
+      reject(new Error('当前环境不支持文件读取'))
+    }
+    // #endif
+  })
+}
+
 const handleAvatarClick = () => {
   uni.chooseImage({
     count: 1,
@@ -156,75 +184,50 @@ const handleAvatarClick = () => {
       uni.showLoading({ title: '准备上传...', mask: true })
 
       try {
-        // 1. 获取预签名 URL (严格 HTTP PUT 方法)
-        const res = (await userApi.getPresignedUrl()) as any
-        if (!res.data || !res.data.uploadUrl) {
-          throw new Error('无法获取上传地址')
+        // 1. 获取直传配置 (包含带签名的 Worker 链接)
+        const configRes = (await userApi.getAvatarUploadConfig()) as {
+          code: number
+          message: string
+          data: { uploadUrl: string; finalUrl: string }
+        }
+        if (configRes.code !== 200 && configRes.code !== 0) {
+          throw new Error(configRes.message || '获取上传配置失败')
         }
 
-        const { uploadUrl, finalUrl } = res.data
+        const { uploadUrl, finalUrl } = configRes.data
 
-        // 2. 原生层二进制直传 R2
+        // 2. 读取本地文件为纯粹的二进制流
+        const fileData = await getFileBuffer(tempFilePath)
 
-        // #ifdef H5
-        // H5：绝不能附带后端没包含在签名里的 Content-Type (如 signatureHeaders=host)
-        // 我们将 File 转为 ArrayBuffer 以完全剥离自带的 MIME Type，防止浏览器自动加上未签名的 Content-Type
-        const file = (chooseRes.tempFiles as any)[0]
-        const arrayBuffer = await file.arrayBuffer()
+        uni.showLoading({ title: '正在上传...', mask: true })
 
-        const fetchRes = await fetch(uploadUrl, {
-          method: 'PUT',
-          body: arrayBuffer, // 纯 ArrayBuffer 类型不会触发浏览器强制加 Content-Type 行为
-          headers: {},
-        })
+        // 3. 发送 PUT 请求强制绕开 multipart / form-data 的限制
+        const uploadRes = await new Promise<UniApp.RequestSuccessCallbackResult>(
+          (resolve, reject) => {
+            uni.request({
+              url: uploadUrl,
+              method: 'PUT',
+              data: fileData,
+              header: {
+                'Content-Type': 'image/jpeg',
+              },
+              success: resolve,
+              fail: reject,
+            })
+          },
+        )
 
-        if (!fetchRes.ok) {
-          let errText = ''
-          try {
-            errText = await fetchRes.text()
-          } catch {
-            /* ignore */
-          }
-          throw new Error(`H5 直传失败 (Status: ${fetchRes.status}): ${errText}`)
+        if (uploadRes.statusCode >= 200 && uploadRes.statusCode < 300) {
+          // 4. 更新前端视图 (业务组件不再关心后续 API 保存逻辑，用户点 "保存修改" 时统一处理)
+          userInfo.value.avatarUrl = finalUrl
+          editData.avatarUrl = finalUrl
+          uni.showToast({ title: '图片已上传至 Cloudflare!', icon: 'success' })
+        } else {
+          throw new Error(`Worker 上传失败，状态码: ${uploadRes.statusCode}`)
         }
-        // #endif
-
-        // #ifndef H5
-        // 小程序/APP：严禁使用 uni.uploadFile，采用读文件转 ArrayBuffer + uni.request 直传
-        await new Promise((resolve, reject) => {
-          const fs = uni.getFileSystemManager()
-          fs.readFile({
-            filePath: tempFilePath,
-            success: (readRes) => {
-              uni.request({
-                url: uploadUrl,
-                method: 'PUT',
-                data: readRes.data, // 原生 ArrayBuffer
-                header: {
-                  // 部分小程序强制附加的头如果导致 400，也应修改或清空
-                },
-                success: (uploadRes) => {
-                  if (uploadRes.statusCode === 200 || uploadRes.statusCode === 204) {
-                    resolve(uploadRes)
-                  } else {
-                    reject(new Error(`原生请求状态码异常: ${uploadRes.statusCode}`))
-                  }
-                },
-                fail: () => reject(new Error('网络请求失败')),
-              })
-            },
-            fail: () => reject(new Error('读取本地文件失败')),
-          })
-        })
-        // #endif
-
-        // 3. 上传完成，更新本地视图
-        userInfo.value.avatarUrl = finalUrl
-        editData.avatarUrl = finalUrl
-        uni.showToast({ title: '更新成功', icon: 'success' })
       } catch (err) {
-        console.error('R2 Direct Upload Failed:', err)
-        uni.showToast({ title: '图片上传失败', icon: 'none' })
+        console.error('Avatar Upload Failed:', err)
+        uni.showToast({ title: (err as Error).message || '图片上传失败', icon: 'none' })
       } finally {
         uni.hideLoading()
       }

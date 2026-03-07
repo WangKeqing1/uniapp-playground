@@ -33,34 +33,19 @@
   --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* ------ 跨端间距基准适配 (核心逻辑) ------ */
-  /* #ifndef MP */
-  /* H5 或 Electron 端：使用标准 Web 缩放 (1单位 = 0.25rem = 4px) */
+  /* 统一使用 rem，H5 端自然使用 rem（1rem=16px），小程序端由 weapp-tailwindcss (配置 rem2rpx: true) 自动转换为 rpx (1rem=32rpx) */
   --spacing: 0.25rem;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --text-xs: 12px;
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-xl: 20px;
-  /* #endif */
 
-  /* #ifdef MP */
-  /* 小程序端：使用 rpx 响应式缩放 (1单位 = 2rpx) 
-     这样 p-4 在移动端就是 8rpx，在桌面端就是 16px，保持比例一致 */
-  --spacing: 2rpx;
-  --radius-sm: 8rpx;
-  --radius-md: 16rpx;
-  --radius-lg: 24rpx;
-  --radius-xl: 32rpx;
-  --text-xs: 20rpx;
-  --text-sm: 24rpx;
-  --text-base: 28rpx;
-  --text-lg: 32rpx;
-  --text-xl: 36rpx;
-  /* #endif */
+  --radius-sm: 0.25rem; /* H5: 4px | MP: 8rpx */
+  --radius-md: 0.5rem; /* H5: 8px | MP: 16rpx */
+  --radius-lg: 0.75rem; /* H5: 12px | MP: 24rpx */
+  --radius-xl: 1rem; /* H5: 16px | MP: 32rpx */
+
+  --text-xs: 0.75rem; /* H5: 12px | MP: 24rpx */
+  --text-sm: 0.875rem; /* H5: 14px | MP: 28rpx */
+  --text-base: 1rem; /* H5: 16px | MP: 32rpx */
+  --text-lg: 1.125rem; /* H5: 18px | MP: 36rpx */
+  --text-xl: 1.25rem; /* H5: 20px | MP: 40rpx */
 
   --radius-full: 9999px;
 }

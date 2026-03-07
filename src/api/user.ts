@@ -55,37 +55,11 @@ export const userApi = {
   },
 
   /**
-   * 上传头像
-   * @param filePath 临时文件路径
+   * 获取头像直传配置 (R2 直传)
    */
-  uploadAvatar(filePath: string) {
-    const token = uni.getStorageSync('token')
-    return new Promise((resolve, reject) => {
-      uni.uploadFile({
-        url: 'http://localhost:8080/api/v1/users/me/avatar',
-        filePath: filePath,
-        name: 'file',
-        header: {
-          Authorization: `Bearer ${token}`,
-        },
-        success: (res) => {
-          if (res.statusCode === 200) {
-            resolve(res.data) // 返回的是头像地址字符串
-          } else {
-            reject(res)
-          }
-        },
-        fail: (err) => reject(err),
-      })
-    })
-  },
-
-  /**
-   * 获取头像上传预签名 URL (支持直传 R2)
-   */
-  getPresignedUrl() {
+  getAvatarUploadConfig() {
     return request({
-      url: '/api/v1/users/me/avatar/presigned-url',
+      url: '/api/v1/users/me/avatar/upload-config',
       method: 'GET',
     })
   },
@@ -95,5 +69,28 @@ export const userApi = {
    */
   getGithubAuthUrl() {
     return 'http://localhost:8080/oauth2/authorization/github'
+  },
+
+  /**
+   * 1. 请求 GitHub 设备验证码
+   */
+  getGithubDeviceCode() {
+    return request({
+      url: '/api/v1/auth/github/device/code',
+      method: 'POST',
+      noAuth: true,
+    })
+  },
+
+  /**
+   * 2. 轮询 GitHub 设备 Token
+   * 后端可能返回 202 或业务状态表示 pending
+   */
+  pollGithubDeviceToken(deviceCode: string) {
+    return request({
+      url: `/api/v1/auth/github/device/token?deviceCode=${deviceCode}`,
+      method: 'POST',
+      noAuth: true,
+    })
   },
 }

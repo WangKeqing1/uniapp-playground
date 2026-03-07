@@ -16,6 +16,8 @@ export default defineConfig({
       // tailwindcss v4 必须显式指定入口 CSS 文件路径
       // 让 weapp-tailwindcss 与 tailwindcss 保持一致的处理模式
       cssEntries: [path.resolve(__dirname, './src/main.css')],
+      // 开启 rem 转 rpx，默认 1rem = 32rpx，适配大部分小程序的尺寸体系
+      rem2rpx: true,
     }),
     // 首次构建完成后自动打开微信开发者工具（支持冷启动）
     autoOpenWeixinDevtools(),
